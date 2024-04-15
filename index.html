@@ -7,18 +7,45 @@
       rel="stylesheet"
       href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
     />
-    <!-- Tailwind -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.1/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+
+     <!-- Tailwind -->
+     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.1/dist/full.min.css" rel="stylesheet" type="text/css" />
+     <script src="https://cdn.tailwindcss.com"></script>
+
     <!-- custom css -->
     <link rel="stylesheet" href="./assets/css/styles.css" />
     <title>Best Day of Your Life</title>
+    
   </head>
-  <body>
+<body>
+    <h1>Best Day of the Year</h1>
+    <button onclick=“my_modal_1.showModal()” class=“bg-violet-500 text-white py-2 px-4 font-bold rounded-sm transition ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-500">Add DOB</button>
+        <dialog id=“my_modal_1” class=“modal”>
+            <div class=“modal-box”>
+                <form method=“dialog”>
+                    <button class=“btn btn-sm btn-circle btn-ghost absolute right-2 top-2”>✕</button>
+                  </form>
+                  <form>
+                      <label for=“” class=“block text-left text-lg”>Enter your DOB:</label>
+                      <input type=“date” class=“form-input w-full block border-b-2 mb-4 border-slate-300 p-1 focus-visible:border-slate-900 focus-visible:outline-none”/>
+                      <button type=“submit” class=“bg-violet-500 text-white font-bold rounded-sm hover:ring px-12 py-2”>Submit</button>
+                  </form>
+            </div>
+        </dialog>
+
+
+    <!-- <button type="button">Add Your Birthday</button>
     <form id="form-input">
-        <p class="text-base">Date: <input type="text" class="appeareance-none border-slate-300" id="datepicker" /></p>
-        <input class="ui-button ui-widget ui-corner-all" type="submit" value="submit">
+
+        <p>Date: <input type="text" id="datepicker" /></p>
+        <input class="ui-button ui-widget ui-corner-all" type="submit" value="submit"> -->
+
+
+
+        
+
     </form>
+    <button type="button">Back</button>
     <div id="event-results"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
