@@ -11,6 +11,9 @@ function handleSubmit(event) {
         return;
     }
 
+    const birthPlace = $("#birthplace-search").val();
+    console.log(birthPlace);
+    getBirthPlaceLatLon(birthPlace);
     handleDate(dateBirth);
     convertDate(dateBirth);
 }
@@ -58,10 +61,7 @@ function renderEvents(births) {
 }
 
 function handleBirthPlace(event) {
-    event.preventDefault();
-    const birthPlace = $("#birthplace-search").val();
-    console.log(birthPlace);
-    getBirthPlaceLatLon(birthPlace);
+   
 }
 
 function getBirthPlaceLatLon(birthPlace) {
@@ -113,6 +113,6 @@ $(document).ready(function () {
 
     $("#date-form").on("submit", handleSubmit);
 
-    $("#birthplace-request").on("submit", handleBirthPlace);
+    // $("#birthplace-request").on("submit", handleBirthPlace);
 });
 // add the form 
