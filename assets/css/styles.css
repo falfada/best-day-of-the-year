@@ -18,3 +18,7 @@
     font-weight: 800;
     font-style: normal;
   }
+
+  #place-of-birth {
+    text-transform: capitalize;
+  }

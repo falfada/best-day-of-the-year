@@ -41,8 +41,8 @@
   </head>
   <body class="bg-slate-950">
     <!-- Container to request for the data -->
-    <section class="container mx-auto h-screen">
-      <h1
+    <section class="container mx-auto <!--h-screen-->">
+      <!-- <h1
         class="pt-10 w-1/2 text-9xl montserrat-900-italic text-white uppercase"
       >
         Best <span class="text-green-400">Day</span> of the
@@ -50,12 +50,12 @@
         <span class="material-symbols-outlined text-yellow-200 text-9xl">
           celebration
         </span>
-      </h1>
+      </h1> -->
       <button
         onclick="modal_dob.showModal()"
         class="bg-green-400 mt-8 py-2 px-7 montserrat-800 uppercase rounded-full text-xl transition ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-green-400/60"
       >
-        Add DOB
+        Click here to enter your birthdate & birthplace
       </button>
 
       <dialog id="modal_dob" class="modal">
@@ -103,7 +103,7 @@
 
     <!-- Container that displays data -->
     <section class="container mx-auto">
-      <button
+      <!-- <button
         type="button"
         class="montserrat-800 flex gap-2 bg-green-400 mt-8 py-2 px-7 font-bold uppercase rounded-full text-xl transition ease-in-out hover:-translate-x-2"
       >
@@ -111,9 +111,9 @@
         arrow_back
         </span>
         Back
-      </button>
+      </button> -->
       <h2 class="text-white text-9xl montserrat-900-italic mt-10">
-        Back in <span class="text-green-400">Sydney</span>
+        Home in <span id="place-of-birth" class="text-green-400">...</span>
         <span class="material-symbols-outlined text-yellow-200 text-9xl">
           home_pin
         </span>
@@ -121,14 +121,15 @@
       <div id="event-results" class="mt-10 grid grid-cols-1 gap-10">
         <!-- Results template -->
         <div class="bg-green-400 rounded-lg p-8 grid-cols-1 gap-10">
-          <p class="text-7xl uppercase montserrat-900-italic">2000</p>
-          <p class="montserrat-400 text-lg">Lorem ipsum</p>
+          <p class="text-7xl uppercase montserrat-900-italic">In the year <span id="year-of-birth">...</span></p>
+          <p class="montserrat-400 text-lg">On <span id="day-month-of-birth"> ...</span><p>
+          <p class="montserrat-400 text-lg">The weather was...</p>
           <div class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full">
             <span class="material-symbols-outlined">
               thermostat
               </span>
 
-              <p class="montserrat-400 text-md">10C/23C</p>
+              <p id="birthday-temp" class="montserrat-400 text-md">...</p>
           </div>
         </div>
 
