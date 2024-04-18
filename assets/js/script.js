@@ -78,6 +78,24 @@ function fetchWeatherData(lat, lon, date) {
 function renderWeather(data) {
     // const weather = data.current.weather[0].description;
     // console.log(weather);
+    const date = convertDate(birthDate);
+    // const age = currentAge(unixTime * 1000);
+    let thisYear = new Date();
+    let thisYearUni = convertDate(thisYear);
+    let currentAge = convertDate(thisYear) - convertDate(date);
+    console.log(currentAge);
+    const dayjs = require(‘dayjs’);
+    let age = dayjs();
+    console.log(age);
+
+ 
+ const birthAge = date.getFullYear();
+
+
+    
+const
+ year = date.getFullYear();
+
     const birthdayTemp = $("#birthday-temp");
     birthdayTemp.text(`${data.data[0].temp} C`);
 }
