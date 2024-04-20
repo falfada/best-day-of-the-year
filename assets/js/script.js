@@ -1,5 +1,16 @@
+// weather API key
+const apiKey = "930ab72ef79543069c0462a5f5878d1a";
+// the user's birthdate and birthplace from the form
 let birthDate;
 let birthPlace;
+// the user's age in years from the function getAgeInYears()
+let ageInYears;
+// Array to store the Unix timestamps for each year of the user's life from the function generateYearlyUnixTimestamps()
+const unixTimestamps = [];
+// the latitude and longitude of the user's birthplace from the function getLatitudeLongitude()
+let latitude;
+let longitude;
+
 
 function handleSubmit(event) {
   event.preventDefault();
@@ -12,16 +23,54 @@ function handleSubmit(event) {
     alert("Please enter a valid birthdate and birthplace");
     return;
   }
+  // clean form input fields
+  $("#date-of-birth").val("");
+  $("#birthplace-search").val("");
   // close modal
   document.getElementById("modal_dob").close();
 
+  // get age in years
+  getAgeInYears();
+  console.log(`Age in years: ${ageInYears}`);
+
+  // generate yearly unix timestamps from birthDate until now and store in global unixTimestamps array
+  generateYearlyUnixTimestamps(birthDate, ageInYears);
+
+  // get latitude and longitude of birthplace for weather API and fetch weather data asynchronously
+  geoLocateBirthPlace(birthPlace)
+    .then((data) => getLatitudeLongitude(data))
+    .then(() => fetchWeatherData(unixTimestamps));
+
   // render birthplace to page
   renderBirthPlaceBirthYear(birthPlace, birthDate);
-  // get latitude and longitude of birthplace for weather API
-  geoLocateBirthPlace(birthPlace);
+
+  // TODO - STILL NEED TO GET A FAMOUS BIRTHDAY FOR EACH YEAR OF WEATHER FROM THE WIKI API
   handleDate(birthDate);
   convertDate(birthDate);
+
+  // NOTE THE renderEvents() FUNCTION IS NOT ACTIVE - NEED TO GET THE FAMOUS BIRTHDAY RANDOMLY FROM THE WIKI API AND RENDER TO THE PAGE WITH THE WEATHER DATA FOR EACH YEAR
+  // SEE LINE 190 & 193 BELOW
 }
+
+function generateYearlyUnixTimestamps(birthDate, ageInYears) {
+  // Parse the input date to ensure it's a Date object
+  let date = new Date(birthDate);
+  // push original birthdate to array
+    unixTimestamps.push(date.getTime() / 1000);
+
+  // Loop to generate additional dates, adding one year each time
+  for (let i = 0; i < ageInYears; i++) {
+    // Create a new Date object from the current date
+    let newDate = new Date(date);
+    // Add one year
+    newDate.setFullYear(newDate.getFullYear() + 1);
+    // Convert the new date to a Unix timestamp and add it to the array
+    unixTimestamps.push(newDate.getTime() / 1000);
+    // Update the date for the next iteration
+    date = newDate;
+  }
+}
+
 // render birthplace and birthdate to page
 function renderBirthPlaceBirthYear(place, date) {
   const placeOfBirth = $("#place-of-birth");
@@ -30,18 +79,21 @@ function renderBirthPlaceBirthYear(place, date) {
   const dayMonthOfBirth = $("#day-month-of-birth");
   // get birthday from date
   const dateObject = new Date(date);
-    yearOfBirth.text(dateObject.getFullYear());
-    dayMonthOfBirth.text(dateObject.getDate() + "/" + (dateObject.getMonth() + 1));
+  yearOfBirth.text(dateObject.getFullYear());
+  dayMonthOfBirth.text(
+    dateObject.getDate() + "/" + (dateObject.getMonth() + 1)
+  );
 }
 
 // use OpenWeather API to get latitude and longitude of birthplace
 function geoLocateBirthPlace(birthPlace) {
-  const apiKey = "930ab72ef79543069c0462a5f5878d1a";
   const cityQueryUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${birthPlace}&appid=${apiKey}`;
-  fetch(cityQueryUrl)
+
+  return fetch(cityQueryUrl)
     .then((response) => response.json())
     .then((data) => {
-      getLatitudeLongitude(data);
+      console.log("Success:", data);
+      return data;
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -50,61 +102,68 @@ function geoLocateBirthPlace(birthPlace) {
 
 // read Lat & Lon from API response
 function getLatitudeLongitude(data) {
-  const latitude = data[0].lat;
-  const longitude = data[0].lon;
-  // convert global birthDate to unix time
-  const date = convertDate(birthDate);
-  // call weather API with lat, lon, and date
-  fetchWeatherData(latitude, longitude, date);
+  latitude = data[0].lat;
+  longitude = data[0].lon;
 }
 
-function fetchWeatherData(lat, lon, date) {
-  const apiKey = "930ab72ef79543069c0462a5f5878d1a";
-  fetch(
-    `https://api.openweathermap.org/data/3.0/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${date}&appid=${apiKey}&units=metric`
-  )
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      console.log(`This is the weather: `, data);
-      renderWeather(data);
-    })
-    .catch(function (error) {
-      console.log("Error on the API requeriments", error);
-    });
+// Note async function waits until each date has been fetched before moving on to the next
+async function fetchWeatherData(dateArray) {
+    // loop through each date in the array
+  for (const date of dateArray) {
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/3.0/onecall/timemachine?lat=${latitude}&lon=${longitude}&dt=${date}&appid=${apiKey}&units=metric`
+      );
+      const data = await response.json();
+        console.log(data);
+      // render the weather data to the page
+        renderWeather(data);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }
 }
+
+// TODO: RENDERED DATA NEEDS TO BE STYLED
 
 function renderWeather(data) {
-    // const weather = data.current.weather[0].description;
-    // console.log(weather);
-    const date = convertDate(birthDate);
-    // const age = currentAge(unixTime * 1000);
-    let thisYear = new Date();
-    let thisYearUni = convertDate(thisYear);
-    let currentAge = convertDate(thisYear) - convertDate(date);
-    console.log(currentAge);
-    const dayjs = require(‘dayjs’);
-    let age = dayjs();
-    console.log(age);
+  const birthdayTemp = $("#birthday-temp");
 
- 
- const birthAge = date.getFullYear();
-
-
-    
-const
- year = date.getFullYear();
-
-    const birthdayTemp = $("#birthday-temp");
-    birthdayTemp.text(`${data.data[0].temp} C`);
+  // convert unix timestamp to date and get year
+    const nextDate = new Date(data.data[0].dt * 1000);
+    const nextYear = nextDate.getFullYear();
+  // create div for each year to append to birthdayTemp
+    const yearDiv = $("<div>");
+    // add text to div
+    yearDiv.text(`In ${nextYear}, the temperature was: ${Math.round(data.data[0].temp)} C`);
+    // append div to birthdayTemp
+    birthdayTemp.append(yearDiv);
 }
 
+function getAgeInYears() {
+  let birthday = new Date(birthDate);
+  let currentDate = new Date();
+
+  ageInYears = currentDate.getFullYear() - birthday.getFullYear();
+
+  // Adjust for cases where the current date is before the birth date in the calendar year
+  if (
+    currentDate.getMonth() < birthday.getMonth() ||
+    (currentDate.getMonth() == birthday.getMonth() &&
+      currentDate.getDate() < birthday.getDate())
+  ) {
+    ageInYears--;
+  }
+}
+
+// gets the famous births from the wiki API
 function handleDate(date) {
   const dateObject = new Date(date);
   console.log(dateObject);
+  // get
   fetchDateHistory(dateObject).then(handleData);
 }
+
 function convertDate(date) {
   const dateObject = new Date(date);
   const unixTime = dateObject.getTime() / 1000;
@@ -132,17 +191,15 @@ function handleData(data) {
 }
 
 function renderEvents(births) {
-//   const birthList = $("#event-results");
-//   birthList.empty();
-//   births.forEach((births) => {
-//     const eventElement = $(
-//       `<li>You share a birthday with ${births.text}, who was born in ${births.year}.</li>`
-//     );
-//     birthList.append(eventElement);
-//   });
+  //   const birthList = $("#event-results");
+  //   birthList.empty();
+  //   births.forEach((births) => {
+  //     const eventElement = $(
+  //       `<li>You share a birthday with ${births.text}, who was born in ${births.year}.</li>`
+  //     );
+  //     birthList.append(eventElement);
+  //   });
 }
-
-function handleBirthPlace(event) {}
 
 $(document).ready(function () {
   $("#date-form").on("submit", handleSubmit);
