@@ -34,14 +34,13 @@
     />
     <script src="https://cdn.tailwindcss.com"></script>
 
-
     <!-- custom css -->
     <link rel="stylesheet" href="./assets/css/styles.css" />
     <title>Best Day of Your Life</title>
   </head>
-  <body class="bg-slate-950">
+  <body class="bg-slate-950 min-h-screen">
     <!-- Container to request for the data -->
-    <section class="container mx-auto <!--h-screen-->">
+    <section class="container mx-auto">
       <!-- <h1
         class="pt-10 w-1/2 text-9xl montserrat-900-italic text-white uppercase"
       >
@@ -118,28 +117,61 @@
           home_pin
         </span>
       </h2>
-      <div id="event-results" class="mt-10 grid grid-cols-1 gap-10">
-        <!-- Results template -->
-        <div class="bg-green-400 rounded-lg p-8 grid-cols-1 gap-10">
-          <p class="text-7xl uppercase montserrat-900-italic">In the year <span id="year-of-birth">...</span></p>
-          <p class="montserrat-400 text-lg">On <span id="day-month-of-birth"> ...</span><p>
-          <p class="montserrat-400 text-lg">The weather was...</p>
-          <div class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full">
-            <span class="material-symbols-outlined">
-              thermostat
-              </span>
-
-              <p id="birthday-temp" class="montserrat-400 text-md">...</p>
+      <div class="mt-10 grid grid-cols-2 gap-10">
+        <!-- Results Famous Birthdays -->
+        <article id="event-results">
+          <!-- Container for each famoush -->
+          <div class="bg-yellow-200 rounded-lg p-8 mb-5">
+            <p class="text-7xl uppercase montserrat-900-italic">
+             You share birthday with <span id="famous-name">...</span>
+            </p>
+            <p class="montserrat-400">who was born on <span id="famous-dob">...</span> </p>
           </div>
-        </div>
-
+        </article>
+        <!-- Results template -->
+        <article id="weather-results">
+          <!-- Container for each year -->
+          <div class="bg-green-400 rounded-lg p-8 mb-5">
+            <p class="text-7xl uppercase montserrat-900-italic">
+              In the year <span id="year-of-birth">...</span>
+            </p>
+            <p class="montserrat-400 text-lg">
+              On <span id="day-month-of-birth"> ...</span>
+            </p>
+            <p></p>
+            <p class="montserrat-400 text-lg">The weather was...</p>
+            <div class="flex gap-4">
+              <div
+                class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+              >
+                <span class="material-symbols-outlined"> thermostat </span>
+  
+                <p id="birthday-temp" class="montserrat-400 text-md">...</p>
+              </div>
+  
+              <div
+                class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+              >
+                <span class="material-symbols-outlined"> air </span>
+                <p id="birthday-wind" class="montserrat-400 text-md">...</p>
+              </div>
+  
+              <div
+                class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+              >
+                <span class="material-symbols-outlined"> humidity_mid </span>
+                <p id="birthday-humidity" class="montserrat-400 text-md">...</p>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<!-- Day js Script  -->
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <!-- Day js Script  -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <!-- custom js -->
     <script src="./assets/js/script.js"></script>
     <!-- asldflkejrf  -->
