@@ -48,6 +48,8 @@ function handleSubmit(event) {
   handleDate(birthDate);
   convertDate(birthDate);
 
+  renderEvents(birthDate)
+
   // NOTE THE renderEvents() FUNCTION IS NOT ACTIVE - NEED TO GET THE FAMOUS BIRTHDAY RANDOMLY FROM THE WIKI API AND RENDER TO THE PAGE WITH THE WEATHER DATA FOR EACH YEAR
   // SEE LINE 190 & 193 BELOW
 }
@@ -134,6 +136,7 @@ function renderWeather(data) {
     const nextYear = nextDate.getFullYear();
   // create div for each year to append to birthdayTemp
     const yearDiv = $("<div>");
+
     // add text to div
     yearDiv.text(`In ${nextYear}, the temperature was: ${Math.round(data.data[0].temp)} C`);
     // append div to birthdayTemp
@@ -185,12 +188,32 @@ async function fetchDateHistory(date) {
 }
 
 function handleData(data) {
-  console.log(data);
   const births = data.births;
+
+  console.log(data);
   renderEvents(births);
 }
 
 function renderEvents(births) {
+
+    const birthList = $("#event-results");
+    
+    birthList.empty();
+
+    let randomBirths = [];
+    for(let i = 0; i < unixTimestamps.length; i++) {
+      randomBirths.push(births[Math.floor(Math.random() * births.length)]);
+      
+    }
+    console.log(randomBirths);    
+    randomBirths.forEach((births) => {
+
+      const eventElement = $(
+        `<li>You share a birthday with ${births.text}, who was born in ${births.year}.</li>`
+      );
+      birthList.append(eventElement);
+    });
+
   //   const birthList = $("#event-results");
   //   birthList.empty();
   //   births.forEach((births) => {
@@ -199,6 +222,7 @@ function renderEvents(births) {
   //     );
   //     birthList.append(eventElement);
   //   });
+
 }
 
 $(document).ready(function () {
