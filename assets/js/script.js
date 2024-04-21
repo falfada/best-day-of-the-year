@@ -42,7 +42,7 @@ function handleSubmit(event) {
     .then(() => fetchWeatherData(unixTimestamps));
 
   // render birthplace to page
-  renderBirthPlaceBirthYear(birthPlace, birthDate);
+  renderBirthPlaceBirthYear(birthPlace);
 
   // TODO - STILL NEED TO GET A FAMOUS BIRTHDAY FOR EACH YEAR OF WEATHER FROM THE WIKI API
   handleDate(birthDate);
@@ -58,7 +58,7 @@ function generateYearlyUnixTimestamps(birthDate, ageInYears) {
   // Parse the input date to ensure it's a Date object
   let date = new Date(birthDate);
   // push original birthdate to array
-    unixTimestamps.push(date.getTime() / 1000);
+  unixTimestamps.push(date.getTime() / 1000);
 
   // Loop to generate additional dates, adding one year each time
   for (let i = 0; i < ageInYears; i++) {
@@ -74,17 +74,9 @@ function generateYearlyUnixTimestamps(birthDate, ageInYears) {
 }
 
 // render birthplace and birthdate to page
-function renderBirthPlaceBirthYear(place, date) {
+function renderBirthPlaceBirthYear(place) {
   const placeOfBirth = $("#place-of-birth");
   placeOfBirth.text(place);
-  const yearOfBirth = $("#year-of-birth");
-  const dayMonthOfBirth = $("#day-month-of-birth");
-  // get birthday from date
-  const dateObject = new Date(date);
-  yearOfBirth.text(dateObject.getFullYear());
-  dayMonthOfBirth.text(
-    dateObject.getDate() + "/" + (dateObject.getMonth() + 1)
-  );
 }
 
 // use OpenWeather API to get latitude and longitude of birthplace
@@ -110,16 +102,16 @@ function getLatitudeLongitude(data) {
 
 // Note async function waits until each date has been fetched before moving on to the next
 async function fetchWeatherData(dateArray) {
-    // loop through each date in the array
+  // loop through each date in the array
   for (const date of dateArray) {
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/3.0/onecall/timemachine?lat=${latitude}&lon=${longitude}&dt=${date}&appid=${apiKey}&units=metric`
       );
       const data = await response.json();
-        console.log(data);
+      console.log(data);
       // render the weather data to the page
-        renderWeather(data);
+      renderWeather(data);
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -129,18 +121,49 @@ async function fetchWeatherData(dateArray) {
 // TODO: RENDERED DATA NEEDS TO BE STYLED
 
 function renderWeather(data) {
-  const birthdayTemp = $("#birthday-temp");
+  const birthdayTemp = $("#weather-results");
 
   // convert unix timestamp to date and get year
-    const nextDate = new Date(data.data[0].dt * 1000);
-    const nextYear = nextDate.getFullYear();
+  const nextDate = new Date(data.data[0].dt * 1000);
+  const nextYear = nextDate.getFullYear();
+  const month = nextDate.getMonth() + 1;
+  const day = nextDate.getDate();
   // create div for each year to append to birthdayTemp
-    const yearDiv = $("<div>");
+  const yearDiv = (`
+  <div class="bg-green-400 rounded-lg p-8 mb-5">
+    <div class="bg-green-400 rounded-lg p-8 mb-5">
+    <p class="text-7xl uppercase montserrat-900-italic">
+      In the year ${nextYear}
+    </p>
+    <p class="montserrat-400 text-lg">
+      On <span id="day-month-of-birth"> ${day}/${month}</span>
+    </p>
+    <div class="flex gap-4">
+      <div
+        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+      >
+        <span class="material-symbols-outlined"> thermostat </span>
 
-    // add text to div
-    yearDiv.text(`In ${nextYear}, the temperature was: ${Math.round(data.data[0].temp)} C`);
-    // append div to birthdayTemp
-    birthdayTemp.append(yearDiv);
+        <p id="birthday-temp" class="montserrat-400 text-md">${Math.round(data.data[0].temp)} C</p>
+      </div>
+
+      <div
+        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+      >
+        <span class="material-symbols-outlined"> air </span>
+        <p id="birthday-wind" class="montserrat-400 text-md"> ${data.data[0].wind_speed}m/s</p>
+      </div>
+
+      <div
+        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+      >
+        <span class="material-symbols-outlined"> humidity_mid </span>
+        <p id="birthday-humidity" class="montserrat-400 text-md"> ${data.data[0].humidity}%</p>
+      </div>
+    </div>
+  </div>`);
+  // append div to birthdayTemp
+  birthdayTemp.append(yearDiv);
 }
 
 function getAgeInYears() {
@@ -173,9 +196,8 @@ function convertDate(date) {
   return unixTime;
 }
 async function fetchDateHistory(date) {
-  const wikiUrl = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/births/${
-    date.getMonth() + 1
-  }/${date.getDate()}`;
+  const wikiUrl = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/births/${date.getMonth() + 1
+    }/${date.getDate()}`;
 
   let response = await fetch(wikiUrl, {
     headers: {
@@ -196,32 +218,29 @@ function handleData(data) {
 
 function renderEvents(births) {
 
-    const birthList = $("#event-results");
-    
-    birthList.empty();
+  const birthList = $("#event-results");
 
-    let randomBirths = [];
-    for(let i = 0; i < unixTimestamps.length; i++) {
-      randomBirths.push(births[Math.floor(Math.random() * births.length)]);
-      
-    }
-    console.log(randomBirths);    
-    randomBirths.forEach((births) => {
+  birthList.empty();
 
-      const eventElement = $(
-        `<li>You share a birthday with ${births.text}, who was born in ${births.year}.</li>`
-      );
-      birthList.append(eventElement);
-    });
+  let randomBirths = [];
+  for (let i = 0; i < unixTimestamps.length; i++) {
+    randomBirths.push(births[Math.floor(Math.random() * births.length)]);
 
-  //   const birthList = $("#event-results");
-  //   birthList.empty();
-  //   births.forEach((births) => {
-  //     const eventElement = $(
-  //       `<li>You share a birthday with ${births.text}, who was born in ${births.year}.</li>`
-  //     );
-  //     birthList.append(eventElement);
-  //   });
+  }
+  console.log(randomBirths);
+  randomBirths.forEach((births) => {
+
+    const eventElement = $(
+      `
+        <div class="bg-yellow-200 rounded-lg p-8 mb-5">
+        <p class="text-7xl uppercase montserrat-900-italic">
+         You share birthday with ${births.text}
+        </p>
+        <p class="montserrat-400">who was born on ${births.year} </p>
+      </div>`
+    );
+    birthList.append(eventElement);
+  });
 
 }
 
