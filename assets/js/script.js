@@ -118,7 +118,6 @@ async function fetchWeatherData(dateArray) {
   }
 }
 
-// TODO: RENDERED DATA NEEDS TO BE STYLED
 
 function renderWeather(data) {
   const birthdayTemp = $("#weather-results");
@@ -150,7 +149,7 @@ function renderWeather(data) {
         class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full text-xl"
       >
         <span class="material-symbols-outlined"> air </span>
-        <p class="montserrat-400 text-md"> ${data.data[0].wind_speed}m/s</p>
+        <p class="montserrat-400 text-md"> ${data.data[0].wind_speed} km/h</p>
       </div>
 
       <div
@@ -194,6 +193,8 @@ function convertDate(date) {
   const unixTime = dateObject.getTime() / 1000;
   return unixTime;
 }
+
+// Get the famous birthdays from the wiki API
 async function fetchDateHistory(date) {
   const wikiUrl = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/births/${date.getMonth() + 1
     }/${date.getDate()}`;
@@ -233,9 +234,9 @@ function renderEvents(births) {
       `
         <div class="bg-yellow-200 rounded-lg p-8 mb-5">
         <p class="text-2xl uppercase montserrat-900-italic">
-         You share birthday with ${births.text}
+         You share a birthday with ${births.text}
         </p>
-        <p class="montserrat-400">who was born on ${births.year} </p>
+        <p class="montserrat-400">who was born in ${births.year} </p>
       </div>`
     );
     birthList.append(eventElement);
