@@ -21,7 +21,30 @@ function handleSubmit(event) {
   geoLocateBirthPlace(birthPlace);
   handleDate(birthDate);
   convertDate(birthDate);
+  renderEvents(birthDate)
+  // NOTE THE renderEvents() FUNCTION IS NOT ACTIVE - NEED TO GET THE FAMOUS BIRTHDAY RANDOMLY FROM THE WIKI API AND RENDER TO THE PAGE WITH THE WEATHER DATA FOR EACH YEAR
+  // SEE LINE 190 & 193 BELOW
 }
+
+function generateYearlyUnixTimestamps(birthDate, ageInYears) {
+  // Parse the input date to ensure it's a Date object
+  let date = new Date(birthDate);
+  // push original birthdate to array
+    unixTimestamps.push(date.getTime() / 1000);
+
+  // Loop to generate additional dates, adding one year each time
+  for (let i = 0; i < ageInYears; i++) {
+    // Create a new Date object from the current date
+    let newDate = new Date(date);
+    // Add one year
+    newDate.setFullYear(newDate.getFullYear() + 1);
+    // Convert the new date to a Unix timestamp and add it to the array
+    unixTimestamps.push(newDate.getTime() / 1000);
+    // Update the date for the next iteration
+    date = newDate;
+  }
+}
+
 // render birthplace and birthdate to page
 function renderBirthPlaceBirthYear(place, date) {
   const placeOfBirth = $("#place-of-birth");
@@ -76,12 +99,37 @@ function fetchWeatherData(lat, lon, date) {
 }
 
 function renderWeather(data) {
-    // const weather = data.current.weather[0].description;
-    // console.log(weather);
-    const birthdayTemp = $("#birthday-temp");
-    birthdayTemp.text(`${data.data[0].temp} C`);
+  const birthdayTemp = $("#birthday-temp");
+
+  // convert unix timestamp to date and get year
+    const nextDate = new Date(data.data[0].dt * 1000);
+    const nextYear = nextDate.getFullYear();
+  // create div for each year to append to birthdayTemp
+    const yearDiv = $("<div>");
+
+    // add text to div
+    yearDiv.text(`In ${nextYear}, the temperature was: ${Math.round(data.data[0].temp)} C`);
+    // append div to birthdayTemp
+    birthdayTemp.append(yearDiv);
 }
 
+function getAgeInYears() {
+  let birthday = new Date(birthDate);
+  let currentDate = new Date();
+
+  ageInYears = currentDate.getFullYear() - birthday.getFullYear();
+
+  // Adjust for cases where the current date is before the birth date in the calendar year
+  if (
+    currentDate.getMonth() < birthday.getMonth() ||
+    (currentDate.getMonth() == birthday.getMonth() &&
+      currentDate.getDate() < birthday.getDate())
+  ) {
+    ageInYears--;
+  }
+}
+
+// gets the famous births from the wiki API
 function handleDate(date) {
   const dateObject = new Date(date);
   console.log(dateObject);
@@ -108,20 +156,30 @@ async function fetchDateHistory(date) {
 }
 
 function handleData(data) {
-  console.log(data);
   const births = data.births;
+
+  console.log(data);
   renderEvents(births);
 }
 
 function renderEvents(births) {
-//   const birthList = $("#event-results");
-//   birthList.empty();
-//   births.forEach((births) => {
-//     const eventElement = $(
-//       `<li>You share a birthday with ${births.text}, who was born in ${births.year}.</li>`
-//     );
-//     birthList.append(eventElement);
-//   });
+    const birthList = $("#event-results");
+    
+    birthList.empty();
+
+    let randomBirths = [];
+    for(let i = 0; i < unixTimestamps.length; i++) {
+      randomBirths.push(births[Math.floor(Math.random() * births.length)]);
+      
+    }
+    console.log(randomBirths);    
+    randomBirths.forEach((births) => {
+
+      const eventElement = $(
+        `<li>You share a birthday with ${births.text}, who was born in ${births.year}.</li>`
+      );
+      birthList.append(eventElement);
+    });
 }
 
 function handleBirthPlace(event) {}
