@@ -32,6 +32,12 @@ THEN I am shown a summary of any significant events that happened on my birthday
 App wireframe
 ![app_wireframe](./assets/images/bdoty_wireframe.png "app wireframe")
 
+Final webpage
+![app_homepage](./assets/images/screenshot1.png "app home page")
+![app_modal](./assets/images/screenshot2.png "app modal")
+![app_results](./assets/images/screenshot3.png "app results")
+
+
 ## Team
 
 1. [Daniela Leal Garcia](https://github.com/falfada "Daniela's Github profile")

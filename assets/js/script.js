@@ -131,34 +131,33 @@ function renderWeather(data) {
   // create div for each year to append to birthdayTemp
   const yearDiv = (`
   <div class="bg-green-400 rounded-lg p-8 mb-5">
-    <div class="bg-green-400 rounded-lg p-8 mb-5">
-    <p class="text-7xl uppercase montserrat-900-italic">
+    <h3 class="text-3xl uppercase montserrat-900-italic">
       In the year ${nextYear}
-    </p>
-    <p class="montserrat-400 text-lg">
+    </h3>
+    <p class="montserrat-400 text-xl">
       On <span id="day-month-of-birth"> ${day}/${month}</span>
     </p>
     <div class="flex gap-4">
       <div
-        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full text-xl"
       >
         <span class="material-symbols-outlined"> thermostat </span>
 
-        <p id="birthday-temp" class="montserrat-400 text-md">${Math.round(data.data[0].temp)} C</p>
+        <p class="montserrat-400 text-md">${Math.round(data.data[0].temp)} C</p>
       </div>
 
       <div
-        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full text-xl"
       >
         <span class="material-symbols-outlined"> air </span>
-        <p id="birthday-wind" class="montserrat-400 text-md"> ${data.data[0].wind_speed}m/s</p>
+        <p class="montserrat-400 text-md"> ${data.data[0].wind_speed}m/s</p>
       </div>
 
       <div
-        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full"
+        class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full text-xl"
       >
         <span class="material-symbols-outlined"> humidity_mid </span>
-        <p id="birthday-humidity" class="montserrat-400 text-md"> ${data.data[0].humidity}%</p>
+        <p class="montserrat-400 text-md"> ${data.data[0].humidity}%</p>
       </div>
     </div>
   </div>`);
@@ -233,7 +232,7 @@ function renderEvents(births) {
     const eventElement = $(
       `
         <div class="bg-yellow-200 rounded-lg p-8 mb-5">
-        <p class="text-7xl uppercase montserrat-900-italic">
+        <p class="text-2xl uppercase montserrat-900-italic">
          You share birthday with ${births.text}
         </p>
         <p class="montserrat-400">who was born on ${births.year} </p>
