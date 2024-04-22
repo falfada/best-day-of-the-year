@@ -21,7 +21,7 @@ So I can prove it is the best day of the year
 
 ```md
 GIVEN a form with a datepicker and location input
-WHEN I input my birthdate and birthplace
+WHEN I input` my birthdate and birthplace
 THEN I am shown a weather summary for that location for every year of my life
 WHEN I view the summary of a particular year
 THEN I am shown a summary of any significant events that happened on my birthday 

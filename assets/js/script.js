@@ -137,7 +137,7 @@ function renderWeather(data) {
     <p class="montserrat-400 text-xl">
       On <span id="day-month-of-birth"> ${day}/${month}</span>
     </p>
-    <div class="flex gap-4">
+    <div class="flex flex-wrap gap-x-4">
       <div
         class="w-auto inline-flex gap-x-2 px-4 py-2 mt-4 bg-white/30 backgrop-blur-sm rounded-full text-xl"
       >
