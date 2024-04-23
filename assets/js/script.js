@@ -11,11 +11,13 @@ const unixTimestamps = [];
 let latitude;
 let longitude;
 
+
 // function to handle the form submission
 function handleSubmit(event) {
   event.preventDefault();
   // get birthdate from input
   birthDate = $("#date-of-birth").val();
+
   // get birthplace from input
   birthPlace = $("#birthplace-search").val();
   // validate input
@@ -24,9 +26,9 @@ function handleSubmit(event) {
     return;
   }
   // send birthdate to local storage
-  localStorage.setItem("birthdate", birthDate);
+  localStorage.setItem("birthdate", JSON.stringify(birthDate));
   // send birthplace to local storage
-  localStorage.setItem("birthplace", birthPlace);
+  localStorage.setItem("birthplace", JSON.stringify(birthPlace));
 
   // clean form input fields
   $("#date-of-birth").val("");
@@ -250,4 +252,26 @@ function renderBirths(births) {
 // Await user input in the form
 $(document).ready(function () {
   $("#date-form").on("submit", handleSubmit);
+
 });
+
+let birthplaceLocalStorage = JSON.parse(localStorage.getItem("birthplace"));
+birthDate = JSON.parse(localStorage.getItem("birthdate"));
+let celebritiesBirths = JSON.parse(localStorage.getItem("births"));
+
+if(birthplaceLocalStorage && birthDate && celebritiesBirths){
+  console.log(birthDate);
+  renderBirthPlaceBirthYear(birthplaceLocalStorage);
+  getAgeInYears();
+
+  // generate yearly unix timestamps from birthDate until now and store in global unixTimestamps array
+  generateYearlyUnixTimestamps(birthDate, ageInYears);
+
+  // get latitude and longitude of birthplace for weather API and fetch weather data asynchronously
+  geoLocateBirthPlace(birthplaceLocalStorage)
+    .then((data) => getLatitudeLongitude(data))
+    .then(() => fetchWeatherData(unixTimestamps));
+
+  fetchHistory(birthDate);
+}
+
