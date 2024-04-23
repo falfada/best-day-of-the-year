@@ -11,7 +11,7 @@ const unixTimestamps = [];
 let latitude;
 let longitude;
 
-
+// function to handle the form submission
 function handleSubmit(event) {
   event.preventDefault();
   // get birthdate from input
@@ -44,14 +44,8 @@ function handleSubmit(event) {
   // render birthplace to page
   renderBirthPlaceBirthYear(birthPlace);
 
-  // TODO - STILL NEED TO GET A FAMOUS BIRTHDAY FOR EACH YEAR OF WEATHER FROM THE WIKI API
-  handleDate(birthDate);
-  convertDate(birthDate);
-
-  renderEvents(birthDate)
-
-  // NOTE THE renderEvents() FUNCTION IS NOT ACTIVE - NEED TO GET THE FAMOUS BIRTHDAY RANDOMLY FROM THE WIKI API AND RENDER TO THE PAGE WITH THE WEATHER DATA FOR EACH YEAR
-  // SEE LINE 190 & 193 BELOW
+  // get the historical birthdays from the wiki API
+  fetchHistory(birthDate);
 }
 
 function generateYearlyUnixTimestamps(birthDate, ageInYears) {
@@ -118,7 +112,6 @@ async function fetchWeatherData(dateArray) {
   }
 }
 
-
 function renderWeather(data) {
   const birthdayTemp = $("#weather-results");
 
@@ -128,13 +121,13 @@ function renderWeather(data) {
   const month = nextDate.getMonth() + 1;
   const day = nextDate.getDate();
   // create div for each year to append to birthdayTemp
-  const yearDiv = (`
+  const yearDiv = `
   <div class="bg-green-400 rounded-lg p-8 mb-5">
     <h3 class="text-3xl uppercase montserrat-900-italic">
-      In the year ${nextYear}
+      In the year ${nextYear}, on ${day}/${month}
     </h3>
     <p class="montserrat-400 text-xl">
-      On <span id="day-month-of-birth"> ${day}/${month}</span>
+      The weather was:
     </p>
     <div class="flex flex-wrap gap-x-4">
       <div
@@ -159,7 +152,7 @@ function renderWeather(data) {
         <p class="montserrat-400 text-md"> ${data.data[0].humidity}%</p>
       </div>
     </div>
-  </div>`);
+  </div>`;
   // append div to birthdayTemp
   birthdayTemp.append(yearDiv);
 }
@@ -180,47 +173,47 @@ function getAgeInYears() {
   }
 }
 
-// gets the famous births from the wiki API
-function handleDate(date) {
+// gets a date object for the wikimedia API call
+async function fetchHistory(date) {
+  // convert birthDate to a date object
   const dateObject = new Date(date);
-  console.log(dateObject);
-  // get
-  fetchDateHistory(dateObject).then(handleData);
+  // call the history API with the date object
+  try {
+    const data = await fetchDateHistory(dateObject);
+  } catch (error) {
+    console.error("Error: ", error);
+  }
 }
 
-function convertDate(date) {
-  const dateObject = new Date(date);
-  const unixTime = dateObject.getTime() / 1000;
-  return unixTime;
-}
-
-// Get the famous birthdays from the wiki API
+// fetches the historical births from the wikimedia API
 async function fetchDateHistory(date) {
   const wikiUrl = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/births/${date.getMonth() + 1
     }/${date.getDate()}`;
 
-  let response = await fetch(wikiUrl, {
-    headers: {
-      Authorization:
-        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJiODE0MzI2M2EwNjdlMTZjYTk4Yjc3NTE5ZDYyMjAyOSIsImp0aSI6IjkzNmFiMzQzZjE5Njc4YjQ2NzEwOGU5YjhmNjQ2MjdjMTI4ODRjNzczMDcyYzc3MjYwMGJkZjdhZjY2ZTZhZTliY2MzYmYyMTUwMDE0M2E5IiwiaWF0IjoxNzEyNzAwNzAzLjU1ODU5MSwibmJmIjoxNzEyNzAwNzAzLjU1ODU5NCwiZXhwIjozMzI2OTYwOTUwMy41NTcwMTQsInN1YiI6Ijc1Mzk1ODMxIiwiaXNzIjoiaHR0cHM6Ly9tZXRhLndpa2ltZWRpYS5vcmciLCJyYXRlbGltaXQiOnsicmVxdWVzdHNfcGVyX3VuaXQiOjUwMDAsInVuaXQiOiJIT1VSIn0sInNjb3BlcyI6WyJiYXNpYyJdfQ.ujp3V_UB6_tfrkt9Gm22HJXSkU-JuUufVRlRiUzkbGt60vDu2vNABOfZz7Cv2EBkxjfRpsk2i3ov135zXQWBZZPxwrmk_ilB5hlaoVIrQrRaZ1zyC0j_3fnpI4zsC07FExbWFPOokTQID1Z4_mRsc7MfBZzi_tGNXPOcT0TmFWN3D5WNvpWnbCedfNDr3J_sUXQQaEDS10cncjes96ourgg93X_ZnmBTcQJ4R_Y8jppkTz_aaAeYCJju-SFCwmjThrKzcKSY1kY7C0a3_P39YhiZYfu0TLBoySPyNHTv1t5eo55F9FzZ1DQRQhJSKg4Mc0OdPtWgLvE09gb6B7AY9rdWeN2p9fjOIcIXlK4f8oBTP7CWC0ugOUoDE7a0Ob9fwIMhG_YIS6mrNS_ms3diIYP7DqidDY6h-W6KIyA4QfKtObcS1gzPpfTVvehBTMW7iBcvBNakvkPxtE7YlKFtYfyOgeW2sw-r-BKscXMtPvPyzAZHnUCSMNICoudmkN0E49yuDihH4sHMxa_IZ3BHeIqHwMk1ZA7J44tC39g82h1uBVjYQyf80jGmViz_mOYNlW1tT3qGiCf8ZNCVVI65Mp0U4D_DTOSG7ukHogixQvYRO-2Qz2tPNbC9cZKicpP19sUTTNlRcGkQwMVPt4rz6vbHCJaWjtpoa7E1YPh8RcM",
-      "Api-User-Agent": "best_day_of_the_year",
-    },
-  });
-  return response.json().catch(console.error);
+    try {
+      const response = await fetch(wikiUrl);
+      const data = await response.json();
+      const births = data.births;
+      // renderBirths waits for the data to be fetched before executing
+      renderBirths(births);
+    } catch (error) {
+      console.error("Error: ", error);
+    }
 }
 
-function handleData(data) {
-  const births = data.births;
-
-  console.log(data);
-  renderEvents(births);
-}
-
-function renderEvents(births) {
+// renders the historical births to the page
+function renderBirths(births) {
 
   const birthList = $("#event-results");
 
   birthList.empty();
+
+  birthList.append(
+            `<div class="bg-yellow-200 rounded-lg p-8 mb-5">
+        <p class="text-2xl uppercase montserrat-900-italic">
+         You share a birthday with:
+      </div>`
+  );
 
   let randomBirths = [];
   for (let i = 0; i < unixTimestamps.length; i++) {
@@ -234,16 +227,18 @@ function renderEvents(births) {
       `
         <div class="bg-yellow-200 rounded-lg p-8 mb-5">
         <p class="text-2xl uppercase montserrat-900-italic">
-         You share a birthday with ${births.text}
+         ${births.text}
         </p>
         <p class="montserrat-400">who was born in ${births.year} </p>
       </div>`
     );
+
     birthList.append(eventElement);
   });
 
 }
 
+// Await user input in the form
 $(document).ready(function () {
   $("#date-form").on("submit", handleSubmit);
 });
