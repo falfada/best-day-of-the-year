@@ -4,7 +4,7 @@ Coding Bootcamp collaborative group project to solve a real world problem.
 
 ## Description
 
-Our project permits a user to input their birthday using a datepicker and using server-side APIs and the application will return:
+Our project permits a user to input their birthday and birthplace, and using server-side APIs and the application will return:
 
 1. A summary of the weather on their birthday for every year they have lived
 2. A summary of significant events that have occurred on their birthday
