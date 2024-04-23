@@ -23,6 +23,11 @@ function handleSubmit(event) {
     alert("Please enter a valid birthdate and birthplace");
     return;
   }
+  // send birthdate to local storage
+  localStorage.setItem("birthdate", birthDate);
+  // send birthplace to local storage
+  localStorage.setItem("birthplace", birthPlace);
+
   // clean form input fields
   $("#date-of-birth").val("");
   $("#birthplace-search").val("");
@@ -221,15 +226,19 @@ function renderBirths(births) {
 
   }
   console.log(randomBirths);
+
+  // send births to local storage
+  localStorage.setItem("births", JSON.stringify(randomBirths));
+
   randomBirths.forEach((births) => {
 
     const eventElement = $(
       `
         <div class="bg-yellow-200 rounded-lg p-8 mb-5">
         <p class="text-2xl uppercase montserrat-900-italic">
-         ${births.text}
+         ${births.text}. Born: ${births.year}
         </p>
-        <p class="montserrat-400">who was born in ${births.year} </p>
+        <p class="montserrat-400">${births.pages[0].extract} </p>
       </div>`
     );
 
